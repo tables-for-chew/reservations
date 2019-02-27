@@ -122,3 +122,46 @@
     }
   });
   ```
+
+**Delete a Booking**
+----
+  <_Given a restaurant id, date, and time, make a reservation for that day and time._>
+
+* **URL**
+
+  - `/api/reserve/book/:restaurantId/:date/:time`
+
+* **Method:**
+
+  - `DELETE`
+
+*  **URL Params**
+
+   - **Required:**
+
+      `restaurantId=[integer]`
+      `date=[moment.js object]`
+      `time=[HH:mm]`
+
+* **Success Response:**
+
+  * **Code:** 201
+    **Content:** `{}`
+ 
+* **Error Response:**
+
+  * **Code:** `404 NOT FOUND`
+    **Content:** `{ error : "" }`
+
+* **Sample Call:**
+  ```
+  $.ajax({
+    url: "/api/reserve/book/1//",
+    dataType: "json",
+    data: {},
+    type : "POST",
+    success : function(r) {
+      console.log(r);
+    }
+  });
+  ```
