@@ -4,10 +4,14 @@ const {
 } = require('./model.js');
 
 module.exports = {
+  /*
+   * Handles requests for number of bookings per day
+   *
+   * Request parameters:
+   *  restaurantId - int
+   */
   load: {
-    // restaurantId
     get: async (req, res) => {
-      // TODO: Do the thing with model here
       const { restaurantId } = req.params;
       try {
         const bookingCount = await getDailyBookCount(restaurantId);
@@ -17,10 +21,18 @@ module.exports = {
       }
     },
   },
+  /*
+   * Handles CRUD requests for reservations
+   *
+   * Request parameters:
+   *  restaurantId - int
+   *  date: string (format: 'YYYY-MM-DD')
+   *  time: string (format: 'HH:mm')
+   */
   bookings: {
-    // restaurantId,
-    // date: [YYYY-MM-DD],
-    // time: [HH:mm]
+    /*
+     * Gets available times within given time period, give or take 2 hours
+     */
     get: async (req, res) => {
       const {
         restaurantId,
@@ -34,6 +46,9 @@ module.exports = {
         res.status(418).send(err); // TODO: i'm a teapot
       }
     },
+    /*
+     * Books a reservation with partySize at the specified time
+     */
     post: async (req, res) => {
       const {
         restaurantId,
@@ -48,6 +63,9 @@ module.exports = {
         res.status(418).send(err); // TODO: i'm a teapot
       }
     },
+    /*
+     * Updates a reservation with partySize at the specified time
+     */
     put: async (req, res) => {
       const {
         restaurantId,
@@ -62,6 +80,9 @@ module.exports = {
         res.status(418).send(err); // TODO: i'm a teapot
       }
     },
+    /*
+     * Deletes a reservation with partySize at the specified time
+     */
     delete: async (req, res) => {
       const {
         restaurantId,
