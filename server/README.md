@@ -123,6 +123,49 @@
   });
   ```
 
+**Update a Reservation**
+----
+  <_Given a restaurant id, date, and time, update a reservation for that day and time._>
+
+* **URL**
+
+  - `/api/reserve/book/:restaurantId/:date/:time`
+
+* **Method:**
+
+  - `PUT`
+
+*  **URL Params**
+
+   - **Required:**
+
+      `restaurantId=[integer]`
+      `date=[moment.js object]`
+      `time=[HH:mm]`
+
+* **Success Response:**
+
+  * **Code:** 204
+    **Content:** `{}`
+ 
+* **Error Response:**
+
+  * **Code:** `404 NOT FOUND`
+    **Content:** `{ error : "" }`
+
+* **Sample Call:**
+  ```
+  $.ajax({
+    url: "/api/reserve/book/1//",
+    dataType: "json",
+    data: {},
+    type : "POST",
+    success : function(r) {
+      console.log(r);
+    }
+  });
+  ```
+
 **Delete a Booking**
 ----
   <_Given a restaurant id, date, and time, make a reservation for that day and time._>
@@ -145,7 +188,7 @@
 
 * **Success Response:**
 
-  * **Code:** 201
+  * **Code:** 204
     **Content:** `{}`
  
 * **Error Response:**
