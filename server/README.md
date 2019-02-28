@@ -55,10 +55,10 @@ Returns the `id` of the reservation created in the database.
   * **Code:** 400 Bad Request error
   * **Content:** `{ error : "Bad Request error" }`
 
-### `PUT /api/reserve/query/:restaurant_id/:date/:time`
+### `PUT /api/reserve/query/`
 Returns `204` to signify successful `UPDATE`.
 
-**URL Params**
+**Request Body Params**
   * `restaurant_id` _(Number)_ : ID of the restaurant to retrieve all relevant details
   * `date` _(Date)_ : Date string following `YYYY-MM-DD` format
   * `time` _(Time)_ : Time string following `HH:mm` format
@@ -71,10 +71,10 @@ Returns `204` to signify successful `UPDATE`.
   * **Code:** 400 Bad Request error
   * **Content:** `{ error : "Bad Request error" }`
 
-### `DELETE /api/reserve/query/:restaurant_id/:date/:time`
+### `DELETE /api/reserve/query/`
 Returns `204` to signify successful `DELETE`.
 
-**URL Params**
+**Request Body Params**
   * `restaurant_id` _(Number)_ : ID of the restaurant to retrieve all relevant details
   * `date` _(Date)_ : Date string following `YYYY-MM-DD` format
   * `time` _(Time)_ : Time string following `HH:mm` format
