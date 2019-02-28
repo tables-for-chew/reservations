@@ -47,7 +47,7 @@ module.exports = {
       }
     },
     /*
-     * Books a reservation with partySize at the specified time
+     * Books a reservation with newTime at the specified time
      */
     post: async (req, res) => {
       const {
@@ -55,16 +55,16 @@ module.exports = {
         date,
         time,
       } = req.params;
-      const { partySize } = req.body;
+      const newTime = req.body.time;
       try {
-        const result = await manageBooking(restaurantId, date, time, 'POST', partySize);
+        const result = await manageBooking(restaurantId, date, time, 'POST', newTime);
         res.status(201).send(result);
       } catch (err) {
         res.status(418).send(err); // TODO: i'm a teapot
       }
     },
     /*
-     * Updates a reservation with partySize at the specified time
+     * Updates a reservation with newTime at the specified time
      */
     put: async (req, res) => {
       const {
@@ -72,9 +72,9 @@ module.exports = {
         date,
         time,
       } = req.params;
-      const { partySize } = req.body;
+      const newTime = req.body.time;
       try {
-        const result = await manageBooking(restaurantId, date, time, 'PUT', partySize);
+        const result = await manageBooking(restaurantId, date, time, 'PUT', newTime);
         res.status(204).send(result);
       } catch (err) {
         res.status(418).send(err); // TODO: i'm a teapot

@@ -1,210 +1,117 @@
-**Get Booking Count**
-----
-  <_Given a restaurant id, return the number of bookings for that given restaurant for the day._>
+  # Table For Chew: Reservations API v1.0
 
-* **URL**
+## <a style="color: #333333">Table of Contents</a>
+* [**Reservations.reservations**](#reservationsreservations)
+    * [GET /api/reserve/query/:restaurant_id/:date/:time](#get-apireservequeryrestaurant_iddatetime)
+    * [POST /api/reserve/query/:restaurant_id/:date/:time](#post-apireservequeryrestaurant_iddatetime)
+    * [PUT /api/reserve/query/:restaurant_id/:date/:time](#put-apireservequeryrestaurant_iddatetime)
+    * [DELETE /api/reserve/query/:restaurant_id/:date/:time](#delete-apireservequeryrestaurant_iddatetime)
+* [**Reservations.restaurants**](#reservationsrestaurants)
+    * [GET /api/reserve/load/:restaurant_id](#get-apireserveloadrestaurant_id)
+* [**Change History**](#change-history)
+<hr>
 
-  - `/api/reserve/load/:restaurantId`
+## Reservations.reservations
+### `GET /api/reserve/query/:restaurant_id/:date/:time`
+Returns a `[{ Reservation }]` within a 2 hour block at a given reservation id.
 
-* **Method:**
+**URL Params**
+  * `restaurant_id` _(Number)_ : ID of the restaurant to retrieve all relevant details
+  * `date` _(Date)_ : Date string following `YYYY-MM-DD` format
+  * `time` _(Time)_ : Time string following `HH:mm` format
 
-  - `GET`
+**Success Response:**
+  * **Status Code:** 200
+  * **Content:** `[{ Reservation }]` conforming to the following format:
 
-*  **URL Params**
-
-   - **Required:**
-
-      `restaurantId=[integer]`
-
-* **Success Response:**
-
-  * **Code:** 200
-    **Content:** `[{ bookings_today : 12 }]`
+  |Key              |Type    |
+  |:--------------- |:------ |
+  |`id`             |Number  |
+  |`restaurant_id`  |Number  |
+  |`date`           |Date    |
+  |`time`           |Date    |
  
-* **Error Response:**
+**Error Response:**
+  * **Code:** 400 Bad Request error
+  * **Content:** `{ error : "Bad Request error" }`
 
-  * **Code:** `404 NOT FOUND`
-    **Content:** `{ error : "" }`
+### `POST /api/reserve/query/:restaurant_id/:date/:time`
+Returns the `id` of the reservation created in the database.
 
-* **Sample Call:**
-  ```
-  $.ajax({
-    url: "/api/reserve/load/1",
-    dataType: "json",
-    type : "GET",
-    success : function(r) {
-      console.log(r);
-    }
-  });
-  ```
+**Payload Params**
+  * Valid `{ JSON }` conforming to the following format:
 
-**Get Restaurant Availability Per Day**
-----
-  <_Given a restaurant id, date, and time, return with that restaurant's availability for the day._>
+  |Key              |Type    |
+  |:--------------- |:------ |
+  |`restaurant_id`  |Number  |
+  |`date`           |Date    |
+  |`time`           |Date    |
 
-* **URL**
-
-  - `/api/reserve/query/:restaurantId/:date/:time`
-
-* **Method:**
-
-  - `GET`
-
-*  **URL Params**
-
-   - **Required:**
-
-      `restaurantId=[integer]`
-      `date=[moment.js object]`
-      `time=[HH:mm]`
-
-* **Success Response:**
-
-  * **Code:** 200
-    **Content:** `[{ TODO: }]`
+**Success Response:**
+  * **Status Code:** 201
+  * **Content:** `{ id }`
  
-* **Error Response:**
+**Error Response:**
+  * **Code:** 400 Bad Request error
+  * **Content:** `{ error : "Bad Request error" }`
 
-  * **Code:** `404 NOT FOUND`
-    **Content:** `{ error : "" }`
+### `PUT /api/reserve/query/:restaurant_id/:date/:time`
+Returns `204` to signify successful `UPDATE`.
 
-* **Sample Call:**
-  ```
-  $.ajax({
-    url: "/api/reserve/query/1//",
-    dataType: "json",
-    type : "GET",
-    success : function(r) {
-      console.log(r);
-    }
-  });
-  ```
+**URL Params**
+  * `restaurant_id` _(Number)_ : ID of the restaurant to retrieve all relevant details
+  * `date` _(Date)_ : Date string following `YYYY-MM-DD` format
+  * `time` _(Time)_ : Time string following `HH:mm` format
 
-**Book a Table**
-----
-  <_Given a restaurant id, date, and time, make a reservation for that day and time._>
-
-* **URL**
-
-  - `/api/reserve/book/:restaurantId/:date/:time`
-
-* **Method:**
-
-  - `POST`
-
-*  **URL Params**
-
-   - **Required:**
-
-      `restaurantId=[integer]`
-      `date=[moment.js object]`
-      `time=[HH:mm]`
-
-* **Success Response:**
-
-  * **Code:** 201
-    **Content:** `{}`
+**Success Response:**
+  * **Status Code:** 204
+  * **Content:** `{}`
  
-* **Error Response:**
+**Error Response:**
+  * **Code:** 400 Bad Request error
+  * **Content:** `{ error : "Bad Request error" }`
 
-  * **Code:** `404 NOT FOUND`
-    **Content:** `{ error : "" }`
+### `DELETE /api/reserve/query/:restaurant_id/:date/:time`
+Returns `204` to signify successful `DELETE`.
 
-* **Sample Call:**
-  ```
-  $.ajax({
-    url: "/api/reserve/book/1//",
-    dataType: "json",
-    data: {},
-    type : "POST",
-    success : function(r) {
-      console.log(r);
-    }
-  });
-  ```
+**URL Params**
+  * `restaurant_id` _(Number)_ : ID of the restaurant to retrieve all relevant details
+  * `date` _(Date)_ : Date string following `YYYY-MM-DD` format
+  * `time` _(Time)_ : Time string following `HH:mm` format
 
-**Update a Reservation**
-----
-  <_Given a restaurant id, date, and time, update a reservation for that day and time._>
-
-* **URL**
-
-  - `/api/reserve/book/:restaurantId/:date/:time`
-
-* **Method:**
-
-  - `PUT`
-
-*  **URL Params**
-
-   - **Required:**
-
-      `restaurantId=[integer]`
-      `date=[moment.js object]`
-      `time=[HH:mm]`
-
-* **Success Response:**
-
-  * **Code:** 204
-    **Content:** `{}`
+**Success Response:**
+  * **Status Code:** 204
+  * **Content:** `{}`
  
-* **Error Response:**
+**Error Response:**
+  * **Code:** 400 Bad Request error
+  * **Content:** `{ error : "Bad Request error" }`
+<hr>
 
-  * **Code:** `404 NOT FOUND`
-    **Content:** `{ error : "" }`
+## Reservations.restaurants
+### `GET /api/reserve/load/:restaurant_id`
+Returns `{ JSON }` at a given restaurant id.
 
-* **Sample Call:**
-  ```
-  $.ajax({
-    url: "/api/reserve/book/1//",
-    dataType: "json",
-    data: {},
-    type : "POST",
-    success : function(r) {
-      console.log(r);
-    }
-  });
-  ```
+**URL Params**
+  * `restaurant_id` _(Number)_ : ID of the restaurant to retrieve all relevant details
 
-**Delete a Booking**
-----
-  <_Given a restaurant id, date, and time, make a reservation for that day and time._>
+**Success Response:**
+  * **Status Code:** 200
+  * **Content:** `{ JSON }` conforming to the following format:
 
-* **URL**
-
-  - `/api/reserve/book/:restaurantId/:date/:time`
-
-* **Method:**
-
-  - `DELETE`
-
-*  **URL Params**
-
-   - **Required:**
-
-      `restaurantId=[integer]`
-      `date=[moment.js object]`
-      `time=[HH:mm]`
-
-* **Success Response:**
-
-  * **Code:** 204
-    **Content:** `{}`
+  |Key                    |Type     |
+  |:--------------------- |:------- |
+  |`id`                   |Number   |
+  |`bookings_today`       |Number   |
  
-* **Error Response:**
+**Error Response:**
+  * **Code:** 400 Bad Request error
+  * **Content:** `{ error : "Bad Request error" }`
 
-  * **Code:** `404 NOT FOUND`
-    **Content:** `{ error : "" }`
 
-* **Sample Call:**
-  ```
-  $.ajax({
-    url: "/api/reserve/book/1//",
-    dataType: "json",
-    data: {},
-    type : "POST",
-    success : function(r) {
-      console.log(r);
-    }
-  });
-  ```
+<hr>
+
+## Change History
+|Name                                 |Version    |Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|Description     |
+|:----------------------------------------------- |:--------- |:--------- |:------- |
+|[@leightonchen](https://github.com/leightonchen) |1.0        |2019-02-27 |Document initial API CRUD routes for relevant models in the `Reservations` microservice.
