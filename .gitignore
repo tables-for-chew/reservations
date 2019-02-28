@@ -26,3 +26,6 @@ dist/
 public/bundle.js
 public/bundle.js.gz
 database/config.js
+
+server-original.js
+config.js
