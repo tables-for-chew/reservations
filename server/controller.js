@@ -71,7 +71,7 @@ module.exports = {
         restaurantId,
         date,
         time,
-      } = req.params;
+      } = req.body;
       const newTime = req.body.time;
       try {
         const result = await manageBooking(restaurantId, date, time, 'PUT', newTime);
@@ -88,7 +88,7 @@ module.exports = {
         restaurantId,
         date,
         time,
-      } = req.params;
+      } = req.body;
       try {
         const result = await manageBooking(restaurantId, date, time, 'DELETE');
         res.status(204).send(result);
