@@ -7,8 +7,8 @@ const {
   createRestaurant,
 } = require('./seed_util.js');
 
-const restaurantPath = path.resolve(__dirname, '../database/restaurants.csv');
-const reservationPath = path.resolve(__dirname, '../database/reservations.csv');
+const restaurantPath = path.resolve(__dirname, '../../database/restaurants.csv');
+const reservationPath = path.resolve(__dirname, '../../database/reservations.csv');
 
 class DataGenerator extends Readable {
   constructor(generator) {
