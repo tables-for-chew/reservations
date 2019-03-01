@@ -1,51 +1,48 @@
 const fs = require('fs');
 const path = require('path');
-const moment = require('moment');
+const { Readable } = require('stream');
 
 const {
   createReservation,
   createRestaurant,
 } = require('./seed_util.js');
 
-console.log(`Initializing: ${moment().format('MMMM Do YYYY, h:mm:ss')}`);
-
 const restaurantPath = path.resolve(__dirname, '../database/restaurants.csv');
 const reservationPath = path.resolve(__dirname, '../database/reservations.csv');
 
-const records = 10000000;
-const stepSize = 10000;
+class DataGenerator extends Readable {
+  constructor(generator) {
+    super();
 
-const seedRestaurants = () => {
-  const stream = fs.createWriteStream(restaurantPath);
-  let step;
-  for (let i = 0; i < (records / stepSize); i += 1) {
-    step = '';
-    for (let j = 0; j < stepSize; j += 1) {
-      const id = (i * stepSize) + j;
-      step += createRestaurant(id);
-    }
-    stream.write(step);
+    this.records = 10000000; // 10 million
+    this.completeRecords = 0;
+    this.rows = '';
+    this.generator = generator;
   }
-  stream.end();
-};
 
-const seedReservations = () => {
-  const stream = fs.createWriteStream(reservationPath);
-  let step;
-  for (let i = 0; i < (records / stepSize); i += 1) {
-    step = '';
-    for (let j = 0; j < stepSize; j += 1) {
-      const id = (i * stepSize) + j;
-      const restaurantId = Math.floor(Math.random() * records);
-      step += createReservation(id, restaurantId);
+  _read() {
+    const chunk = this.completeRecords + 100;
+    if (this.completeRecords === this.records) {
+      this.push(null);
+    } else {
+      for (let i = this.completeRecords; i < chunk; i += 1) {
+        this.rows += this.generator(i + 1, this.records);
+        this.completeRecords += 1;
+      }
+      this.push(this.rows);
+      this.rows = '';
     }
-    stream.write(step);
   }
-  stream.end();
-};
+}
 
-console.log('Generating restaurants...');
-seedRestaurants();
-console.log('Generating reservations...');
-seedReservations();
-console.log(`Finished generating: ${moment().format('MMMM Do YYYY, h:mm:ss')}`);
+// eslint-disable-next-line no-console
+console.log('Generating information for restaurants...');
+const restaurantFile = fs.createWriteStream(restaurantPath);
+const restaurantGenerator = new DataGenerator(createRestaurant);
+restaurantGenerator.pipe(restaurantFile);
+
+// eslint-disable-next-line no-console
+console.log('Generating information for reservations...');
+const reservationFile = fs.createWriteStream(reservationPath);
+const reservationGenerator = new DataGenerator(createReservation);
+reservationGenerator.pipe(reservationFile);

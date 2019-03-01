@@ -13,7 +13,8 @@ const getRandomDate = (months) => {
 };
 
 module.exports = {
-  createReservation: (id, restaurantId) => {
+  createReservation: (id, records) => {
+    const restaurantId = Math.floor(Math.random() * records) + 1;
     const date = getRandomDate(3);
     const time = `${generateRandomNumber(0, 23)}:${generateRandomNumber(0, 3) * 15}`;
     return `${id},${restaurantId},"${date}","${time}"\n`;
