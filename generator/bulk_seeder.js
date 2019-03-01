@@ -12,7 +12,7 @@ console.log(`Initializing: ${moment().format('MMMM Do YYYY, h:mm:ss')}`);
 const restaurantPath = path.resolve(__dirname, '../database/restaurants.csv');
 const reservationPath = path.resolve(__dirname, '../database/reservations.csv');
 
-const records = 10000;
+const records = 10000000;
 const stepSize = 10000;
 
 const seedRestaurants = () => {
