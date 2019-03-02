@@ -29,3 +29,5 @@ database/config.js
 
 server-original.js
 config.js
+
+*.csv

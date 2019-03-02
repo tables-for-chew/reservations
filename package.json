@@ -13,12 +13,16 @@
     "mysql-seed": "mysql -u root < database/schema.sql",
     "server": "node server/server.js",
     "server-dev": "nodemon server/server.js",
-    "test": "jest --verbose --coverage"
+    "test": "jest --verbose --coverage",
+    "generate": "sh ./utils/generator/data_generation.sh",
+    "postgres-seed": "sh ./utils/generator/postgres_seed.sh",
+    "mongo-seed": "sh ./utils/generator/mongo_seed.sh"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "express": "^4.16.4",
+    "faker": "^4.1.0",
     "jquery": "^3.3.1",
     "moment": "^2.24.0",
     "morgan": "^1.9.1",

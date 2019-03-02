@@ -1,10 +1,10 @@
 DROP DATABASE IF EXISTS reservations;
 CREATE DATABASE reservations;
-USE reservations;
 
+\c reservations;
 
 CREATE TABLE restaurants (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   max_party_size INT,
   max_days_to_book INT,
   has_rewards BOOLEAN,
@@ -15,7 +15,7 @@ CREATE TABLE restaurants (
 );
 
 CREATE TABLE reservations (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   restaurant_id INT,
   date DATE,
   time TIME
