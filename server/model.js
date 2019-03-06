@@ -66,7 +66,6 @@ module.exports = {
    */
   getDailyBookCount: async (id) => {
     try {
-      console.log('hey');
       return await connection.query('SELECT bookings_today FROM restaurants WHERE id=$1', id);
     } catch (err) {
       throw err;
