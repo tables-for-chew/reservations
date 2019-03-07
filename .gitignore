@@ -29,5 +29,6 @@ database/config.js
 
 *-original.js
 config.js
+newrelic.js
 
 *.csv
