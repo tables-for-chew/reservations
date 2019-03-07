@@ -3,9 +3,39 @@ const connection = require('../database');
 
 const getAvailableTimes = async (id, date, time) => {
   try {
-    // eslint-disable-next-line camelcase
-    const { time_slot_interval } = (await connection.query('SELECT time_slot_interval FROM restaurants WHERE id=$1', id))[0];
-    const window = Number(time_slot_interval.split(':')[1]);
+    // // eslint-disable-next-line camelcase
+    // const { time_slot_interval } = (await connection.query('SELECT time_slot_interval FROM restaurants WHERE id=$1', id))[0];
+    // const window = Number(time_slot_interval.split(':')[1]);
+    // const windowSteps = 150 / window;
+
+    // // Get all times within a 2.5 hour window of the desired reservation time
+    // const tempTime = moment(time, 'hh:mm')
+    //   .subtract(150, 'minutes');
+    // const queryTimes = [tempTime.format('HH:mm').toString()];
+    // for (let i = 0; i < 2 * windowSteps; i += 1) {
+    //   queryTimes.push(tempTime
+    //     .add(window, 'minute')
+    //     .format('HH:mm')
+    //     .toString());
+    // }
+
+    // // Query the database to strip out the reservations that are taken
+    // const query = `SELECT time FROM reservations WHERE restaurant_id=${id} AND date='${date}'`;
+    // const res = await connection.query(query);
+    // const reservedTimes = res.map(({time}) => moment(time, 'hh:mm:ss').format('HH:mm'));
+    // return queryTimes.filter(qTime => !reservedTimes.includes(qTime));
+    // return availableTimes;
+    const query = `SELECT rt.time_slot_interval, rv.time \
+                  FROM restaurants AS rt LEFT JOIN reservations AS rv \
+                  ON (rv.restaurant_id=rt.id) \
+                  WHERE rt.id=${id}`;
+    const data = await connection.query(query);
+    const reservedTimes = data.map((row) => {
+      if (row.date === date) {
+        return row.time ? moment(row.time, 'hh:mm:ss').format('HH:mm') : undefined;
+      }
+    });
+    const window = Number(data[0].time_slot_interval.split(':')[1]);
     const windowSteps = 150 / window;
 
     // Get all times within a 2.5 hour window of the desired reservation time
@@ -19,17 +49,8 @@ const getAvailableTimes = async (id, date, time) => {
         .toString());
     }
 
-    // Query the database to strip out the reservations that are taken
-    const availableTimes = [];
-    for (let i = 0; i < queryTimes.length; i += 1) {
-      const query = `SELECT * FROM reservations WHERE restaurant_id=${id} AND date='${date}' AND time='${queryTimes[i]}'`;
-      // eslint-disable-next-line no-await-in-loop
-      const res = await connection.query(query);
-      if (!res.length) {
-        availableTimes.push(queryTimes[i]);
-      }
-    }
-    return availableTimes;
+    // Filter out the times already reserved
+    return queryTimes.filter(qTime => !reservedTimes.includes(qTime));
   } catch (err) {
     throw err;
   }
