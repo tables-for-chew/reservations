@@ -40,7 +40,7 @@ module.exports = {
         time,
       } = req.params;
       try {
-        const result = await manageBooking(restaurantId, date, time, 'GET');
+        const result = await manageBooking('GET', { restaurantId, date, time });
         res.status(200).send(result);
       } catch (err) {
         res.status(418).send(err); // TODO: i'm a teapot
@@ -55,26 +55,25 @@ module.exports = {
         date,
         time,
       } = req.params;
-      const newTime = req.body.time;
       try {
-        const result = await manageBooking(restaurantId, date, time, 'POST', newTime);
+        const result = await manageBooking('POST', { restaurantId, date, time });
         res.status(201).send(result);
       } catch (err) {
         res.status(418).send(err); // TODO: i'm a teapot
       }
     },
     /*
-     * Updates a reservation with newTime at the specified time
+     * Updates a reservation given an id
      */
     put: async (req, res) => {
+      const { id } = req.params;
       const {
         restaurantId,
         date,
         time,
       } = req.body;
-      const newTime = req.body.time;
       try {
-        const result = await manageBooking(restaurantId, date, time, 'PUT', newTime);
+        const result = await manageBooking('PUT', { id, restaurantId, date, time });
         res.status(204).send(result);
       } catch (err) {
         res.status(418).send(err); // TODO: i'm a teapot
@@ -84,13 +83,9 @@ module.exports = {
      * Deletes a reservation with partySize at the specified time
      */
     delete: async (req, res) => {
-      const {
-        restaurantId,
-        date,
-        time,
-      } = req.body;
+      const { id } = req.params;
       try {
-        const result = await manageBooking(restaurantId, date, time, 'DELETE');
+        const result = await manageBooking('DELETE', { id });
         res.status(204).send(result);
       } catch (err) {
         res.status(418).send(err); // TODO: i'm a teapot

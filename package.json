@@ -27,6 +27,7 @@
     "moment": "^2.24.0",
     "morgan": "^1.9.1",
     "mysql": "^2.16.0",
+    "pg-promise": "^8.6.2",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "request": "^2.88.0",

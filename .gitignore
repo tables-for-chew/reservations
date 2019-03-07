@@ -27,7 +27,7 @@ public/bundle.js
 public/bundle.js.gz
 database/config.js
 
-server-original.js
+*-original.js
 config.js
 
 *.csv
