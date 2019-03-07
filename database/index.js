@@ -1,4 +1,6 @@
-const pgp = require('pg-promise')();
+const { Pool } = require('pg');
 const config = require('../database/config');
 
-module.exports = pgp(config);
+const pool = new Pool(config);
+
+module.exports = pool;

@@ -3,39 +3,17 @@ const connection = require('../database');
 
 const getAvailableTimes = async (id, date, time) => {
   try {
-    // // eslint-disable-next-line camelcase
-    // const { time_slot_interval } = (await connection.query('SELECT time_slot_interval FROM restaurants WHERE id=$1', id))[0];
-    // const window = Number(time_slot_interval.split(':')[1]);
-    // const windowSteps = 150 / window;
-
-    // // Get all times within a 2.5 hour window of the desired reservation time
-    // const tempTime = moment(time, 'hh:mm')
-    //   .subtract(150, 'minutes');
-    // const queryTimes = [tempTime.format('HH:mm').toString()];
-    // for (let i = 0; i < 2 * windowSteps; i += 1) {
-    //   queryTimes.push(tempTime
-    //     .add(window, 'minute')
-    //     .format('HH:mm')
-    //     .toString());
-    // }
-
-    // // Query the database to strip out the reservations that are taken
-    // const query = `SELECT time FROM reservations WHERE restaurant_id=${id} AND date='${date}'`;
-    // const res = await connection.query(query);
-    // const reservedTimes = res.map(({time}) => moment(time, 'hh:mm:ss').format('HH:mm'));
-    // return queryTimes.filter(qTime => !reservedTimes.includes(qTime));
-    // return availableTimes;
     const query = `SELECT rt.time_slot_interval, rv.time \
                   FROM restaurants AS rt LEFT JOIN reservations AS rv \
                   ON (rv.restaurant_id=rt.id) \
                   WHERE rt.id=${id}`;
-    const data = await connection.query(query);
-    const reservedTimes = data.map((row) => {
+    const { rows } = await connection.query(query);
+    const reservedTimes = rows.map((row) => {
       if (row.date === date) {
         return row.time ? moment(row.time, 'hh:mm:ss').format('HH:mm') : undefined;
       }
     });
-    const window = Number(data[0].time_slot_interval.split(':')[1]);
+    const window = Number(rows[0].time_slot_interval.split(':')[1]);
     const windowSteps = 150 / window;
 
     // Get all times within a 2.5 hour window of the desired reservation time
@@ -65,7 +43,6 @@ const postReservation = async (id, date, time) => {
 };
 
 const updateReservation = async (id, date, time) => {
-  console.log(id, date, time);
   try {
     return await connection.query(`UPDATE reservations SET date='${date}', time='${time}' WHERE id=${id}`);
   } catch (err) {
