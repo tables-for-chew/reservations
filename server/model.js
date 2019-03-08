@@ -3,13 +3,13 @@ const connection = require('../database');
 
 const getAvailableTimes = async (id, date, time) => {
   try {
-    const query = `SELECT rt.time_slot_interval, rv.time \
+    const query = `SELECT rt.time_slot_interval, rv.time, rv.date \
                   FROM restaurants AS rt LEFT JOIN reservations AS rv \
                   ON (rv.restaurant_id=rt.id) \
                   WHERE rt.id=${id}`;
     const { rows } = await connection.query(query);
     const reservedTimes = rows.map((row) => {
-      if (row.date === date) {
+      if (moment(row.date).format('YYYY-MM-DD') === date) {
         return row.time ? moment(row.time, 'hh:mm:ss').format('HH:mm') : undefined;
       }
     });
@@ -36,7 +36,9 @@ const getAvailableTimes = async (id, date, time) => {
 
 const postReservation = async (id, date, time) => {
   try {
-    return await connection.query(`INSERT INTO reservations(restaurant_id, date, time) VALUES(${id}, '${date}', '${time}')`);
+    await connection.query(`INSERT INTO reservations(restaurant_id, date, time) VALUES(${id}, '${date}', '${time}')`);
+    await connection.query(`UPDATE restaurants SET bookings_today = bookings_today+1 WHERE id=${id}`);
+    return;
   } catch (err) {
     throw err;
   }
