@@ -64,7 +64,8 @@ module.exports = {
    */
   getDailyBookCount: async (id) => {
     try {
-      return await connection.query('SELECT bookings_today FROM restaurants WHERE id=$1', id);
+      const { rows } = await connection.query('SELECT bookings_today FROM restaurants WHERE id=$1', [id]);
+      return rows;
     } catch (err) {
       throw err;
     }
