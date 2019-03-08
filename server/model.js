@@ -3,9 +3,17 @@ const connection = require('../database');
 
 const getAvailableTimes = async (id, date, time) => {
   try {
-    // eslint-disable-next-line camelcase
-    const { time_slot_interval } = (await connection.query('SELECT time_slot_interval FROM restaurants WHERE id=$1', id))[0];
-    const window = Number(time_slot_interval.split(':')[1]);
+    const query = `SELECT rt.time_slot_interval, rv.time \
+                  FROM restaurants AS rt LEFT JOIN reservations AS rv \
+                  ON (rv.restaurant_id=rt.id) \
+                  WHERE rt.id=${id}`;
+    const { rows } = await connection.query(query);
+    const reservedTimes = rows.map((row) => {
+      if (row.date === date) {
+        return row.time ? moment(row.time, 'hh:mm:ss').format('HH:mm') : undefined;
+      }
+    });
+    const window = Number(rows[0].time_slot_interval.split(':')[1]);
     const windowSteps = 150 / window;
 
     // Get all times within a 2.5 hour window of the desired reservation time
@@ -19,17 +27,8 @@ const getAvailableTimes = async (id, date, time) => {
         .toString());
     }
 
-    // Query the database to strip out the reservations that are taken
-    const availableTimes = [];
-    for (let i = 0; i < queryTimes.length; i += 1) {
-      const query = `SELECT * FROM reservations WHERE restaurant_id=${id} AND date='${date}' AND time='${queryTimes[i]}'`;
-      // eslint-disable-next-line no-await-in-loop
-      const res = await connection.query(query);
-      if (!res.length) {
-        availableTimes.push(queryTimes[i]);
-      }
-    }
-    return availableTimes;
+    // Filter out the times already reserved
+    return queryTimes.filter(qTime => !reservedTimes.includes(qTime));
   } catch (err) {
     throw err;
   }
@@ -44,7 +43,6 @@ const postReservation = async (id, date, time) => {
 };
 
 const updateReservation = async (id, date, time) => {
-  console.log(id, date, time);
   try {
     return await connection.query(`UPDATE reservations SET date='${date}', time='${time}' WHERE id=${id}`);
   } catch (err) {
