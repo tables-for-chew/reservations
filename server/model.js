@@ -1,4 +1,3 @@
-const moment = require('moment');
 const connection = require('../database');
 
 const getAvailableTimes = async (id, date, time) => {
@@ -9,9 +8,9 @@ const getAvailableTimes = async (id, date, time) => {
                   WHERE rt.id=${id}`;
     const { rows } = await connection.query(query);
     const reservedTimes = rows.map((row) => {
-      if (moment(row.date).format('YYYY-MM-DD') === date) {
+      if (row.date && row.date.toISOString().substring(0, 10) === date) {
         const [h, m] = row.time.split(':');
-        return h * 60 + m;
+        return (h * 60) + Number(m);
       }
     });
     const window = Number(rows[0].time_slot_interval.split(':')[1]);
