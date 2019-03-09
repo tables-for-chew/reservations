@@ -22,7 +22,8 @@ const getAvailableTimes = async (id, date, time) => {
     const queryTimes = [];
     while (timeInMinutes <= resWindow) {
       if (!reservedTimes.includes(timeInMinutes)) {
-        const hm = `${Math.floor(timeInMinutes / 60)}:${timeInMinutes % 60}`;
+        // eslint-disable-next-line no-bitwise
+        const hm = `${~~(timeInMinutes / 60)}:${timeInMinutes % 60}`;
         queryTimes.push(hm);
       }
       timeInMinutes += window;
