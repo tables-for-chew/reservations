@@ -15,7 +15,6 @@ const getAvailableTimes = async (id, date, time) => {
       }
     });
     const window = Number(rows[0].time_slot_interval.split(':')[1]);
-    // const windowSteps = 150 / window;
 
     const [hours, minutes] = time.split(':');
     let timeInMinutes = (hours * 60) + (minutes - 150);
