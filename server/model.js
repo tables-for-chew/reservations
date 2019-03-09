@@ -7,18 +7,19 @@ const getAvailableTimes = async (id, date, time) => {
                   ON (rv.restaurant_id=rt.id) \
                   WHERE rt.id=${id}`;
     const { rows } = await connection.query(query);
-    const reservedTimes = rows.map((row) => {
-      if (row.date && row.date.toISOString().substring(0, 10) === date) {
+    const reservedTimes = rows
+      .filter(row => row.date && row.date.toISOString().substring(0, 10) === date)
+      .map((row) => {
         const [h, m] = row.time.split(':');
-        return (h * 60) + Number(m);
-      }
-    });
+        // eslint-disable-next-line no-bitwise
+        return (h * 60) + ~~m;
+      });
     const window = Number(rows[0].time_slot_interval.split(':')[1]);
 
     const [hours, minutes] = time.split(':');
     let timeInMinutes = (hours * 60) + (minutes - 150);
     const resWindow = timeInMinutes + 300;
-    
+
     const queryTimes = [];
     while (timeInMinutes <= resWindow) {
       if (!reservedTimes.includes(timeInMinutes)) {
