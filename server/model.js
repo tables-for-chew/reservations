@@ -1,4 +1,3 @@
-const moment = require('moment');
 const connection = require('../database');
 
 const getAvailableTimes = async (id, date, time) => {
@@ -8,27 +7,30 @@ const getAvailableTimes = async (id, date, time) => {
                   ON (rv.restaurant_id=rt.id) \
                   WHERE rt.id=${id}`;
     const { rows } = await connection.query(query);
-    const reservedTimes = rows.map((row) => {
-      if (moment(row.date).format('YYYY-MM-DD') === date) {
-        return row.time ? moment(row.time, 'hh:mm:ss').format('HH:mm') : undefined;
-      }
-    });
+    const reservedTimes = rows
+      .filter(row => row.date && row.date.toISOString().substring(0, 10) === date)
+      .map((row) => {
+        const [h, m] = row.time.split(':');
+        // eslint-disable-next-line no-bitwise
+        return (h * 60) + ~~m;
+      });
     const window = Number(rows[0].time_slot_interval.split(':')[1]);
-    const windowSteps = 150 / window;
 
-    // Get all times within a 2.5 hour window of the desired reservation time
-    const tempTime = moment(time, 'hh:mm')
-      .subtract(150, 'minutes');
-    const queryTimes = [tempTime.format('HH:mm').toString()];
-    for (let i = 0; i < 2 * windowSteps; i += 1) {
-      queryTimes.push(tempTime
-        .add(window, 'minute')
-        .format('HH:mm')
-        .toString());
+    const [hours, minutes] = time.split(':');
+    let timeInMinutes = (hours * 60) + (minutes - 150);
+    const resWindow = timeInMinutes + 300;
+
+    const queryTimes = [];
+    while (timeInMinutes <= resWindow) {
+      if (!reservedTimes.includes(timeInMinutes)) {
+        // eslint-disable-next-line no-bitwise
+        const hm = `${~~(timeInMinutes / 60)}:${timeInMinutes % 60}`;
+        queryTimes.push(hm);
+      }
+      timeInMinutes += window;
     }
 
-    // Filter out the times already reserved
-    return queryTimes.filter(qTime => !reservedTimes.includes(qTime));
+    return queryTimes;
   } catch (err) {
     throw err;
   }
